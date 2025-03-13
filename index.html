@@ -1,7 +1,13 @@
-<html>
+<html lang="ko">
 <head>
     <meta http-equiv="origin-trial"
           content="AqU340ywJJI4iGsNNo/0auhliIUVzC/go6Cq9zeqbRYFIiq67AVcdfwaFRPSGLtxG4ktlOvgz6ixPhE4hw1+UAgAAABheyJvcmlnaW4iOiJodHRwczovL3RoZW8tc29uZy5naXRodWIuaW86NDQzIiwiZmVhdHVyZSI6Ikxhbmd1YWdlRGV0ZWN0aW9uQVBJIiwiZXhwaXJ5IjoxNzQ5NTk5OTk5fQ==">
+    <title>lang det</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', Dotum, 'Apple SD Gothic Neo', sans-serif;
+        }
+    </style>
 </head>
 <body>
 <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -9,6 +15,15 @@
     <div style="display:flex; gap: 8px">
         <label for="input">Input</label><input type="text" id="input" style="width: 400px">
     </div>
+    <ol>
+        <li>대한민국 (한국어): 안녕하세요 세상아!</li>
+        <li>미국 (영어): Hello World!</li>
+        <li>일본 (일본어): こんにちは世界!</li>
+        <li>프랑스 (프랑스어): Bonjour le monde!</li>
+        <li>독일 (독일어): Hallo Welt!</li>
+        <li>이탈리아 (이탈리아어): Ciao mondo!</li>
+        <li>스페인 (스페인어): ¡Hola Mundo!</li>
+    </ol>
     <div id="output"></div>
 </div>
 <script>
@@ -49,7 +64,10 @@
         document.getElementById('input').addEventListener('keyup', async (e) => {
             const input = e.target.value;
             const results = await detector.detect(input);
-            document.getElementById('output').innerHTML = results.slice(0, 10).map(({detectedLanguage, confidence}) => `${detectedLanguage} (${confidence})`).join('<br>');
+            document.getElementById('output').innerHTML = results.slice(0, 10).map(({
+                                                                                        detectedLanguage,
+                                                                                        confidence
+                                                                                    }) => `${detectedLanguage} (${confidence})`).join('<br>');
         });
     });
 </script>
