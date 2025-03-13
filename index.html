@@ -1,13 +1,57 @@
 <html>
-  <head>
-    <meta http-equiv="origin-trial" content="AqU340ywJJI4iGsNNo/0auhliIUVzC/go6Cq9zeqbRYFIiq67AVcdfwaFRPSGLtxG4ktlOvgz6ixPhE4hw1+UAgAAABheyJvcmlnaW4iOiJodHRwczovL3RoZW8tc29uZy5naXRodWIuaW86NDQzIiwiZmVhdHVyZSI6Ikxhbmd1YWdlRGV0ZWN0aW9uQVBJIiwiZXhwaXJ5IjoxNzQ5NTk5OTk5fQ==">
-  </head>
-  <body>
-    <h1>Theo's Github Page</h1>
-    <script>
-      window.addEventListener('load', () => {
-        alert('Hello, world!');
-      });
-    </script>
-  </body>
+<head>
+    <meta http-equiv="origin-trial"
+          content="AqU340ywJJI4iGsNNo/0auhliIUVzC/go6Cq9zeqbRYFIiq67AVcdfwaFRPSGLtxG4ktlOvgz6ixPhE4hw1+UAgAAABheyJvcmlnaW4iOiJodHRwczovL3RoZW8tc29uZy5naXRodWIuaW86NDQzIiwiZmVhdHVyZSI6Ikxhbmd1YWdlRGV0ZWN0aW9uQVBJIiwiZXhwaXJ5IjoxNzQ5NTk5OTk5fQ==">
+</head>
+<body>
+<div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <h1>Language Detector</h1>
+    <div style="display:flex; gap: 8px">
+        <label for="input">Input</label><input type="text" id="input" style="width: 400px">
+    </div>
+    <div id="output"></div>
+</div>
+<script>
+    async function getDetector() {
+        const languageDetectorCapabilities = await self.ai.languageDetector.capabilities();
+        const canDetect = languageDetectorCapabilities.capabilities;
+        let detector;
+        if (canDetect === 'no') {
+            // The language detector isn't usable.
+            return;
+        }
+        if (canDetect === 'readily') {
+            // The language detector can immediately be used.
+            detector = await self.ai.languageDetector.create();
+        } else {
+            // The language detector can be used after model download.
+            detector = await self.ai.languageDetector.create({
+                monitor(m) {
+                    m.addEventListener('downloadprogress', (e) => {
+                        console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
+                    });
+                },
+            });
+            await detector.ready;
+        }
+
+        return detector;
+    }
+
+    window.addEventListener('load', async () => {
+        const detector = await getDetector();
+
+        if (!detector) {
+            document.getElementById('output').innerText = 'Language detection is not supported.';
+            return;
+        }
+
+        document.getElementById('input').addEventListener('keyup', async (e) => {
+            const input = e.target.value;
+            const results = await detector.detect(input);
+            document.getElementById('output').innerText = results.map(({detectedLanguage, confidence}) => `${detectedLanguage} (${confidence})`).join('<br>');
+        });
+    });
+</script>
+</body>
 </html>
