@@ -49,7 +49,7 @@
         document.getElementById('input').addEventListener('keyup', async (e) => {
             const input = e.target.value;
             const results = await detector.detect(input);
-            document.getElementById('output').innerText = results.map(({detectedLanguage, confidence}) => `${detectedLanguage} (${confidence})`).join('<br>');
+            document.getElementById('output').innerHTML = results.slice(0, 10).map(({detectedLanguage, confidence}) => `${detectedLanguage} (${confidence})`).join('<br>');
         });
     });
 </script>
